@@ -188,6 +188,7 @@ check_crash_output()
     log_info "- 'fail'"
     log_info "- 'error'"
     log_info "- 'invalid'"
+    log_info "- 'is not _MODULE_END_'"
 
     log_info "- Following patterns will be skipped when searching for errors."
 
@@ -274,7 +275,6 @@ check_crash_output()
          -e '_error' \
          -e 'Data Access error' \
          -e 'invalid float value' \
-         -e '_fail' \
          -e 'failsafe' \
          -e 'invalid_' \
          -e 'invalidate' \
@@ -287,6 +287,7 @@ check_crash_output()
              -e 'fail' \
              -e 'error' \
              -e 'invalid' \
+             -e 'is not _MODULE_END_' \
              2>&1 | tee -a "${K_CRASH_REPORT}"
     local error_found=${PIPESTATUS[2]}
     log_info "- ERROR MESSAGES END"
