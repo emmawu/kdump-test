@@ -46,79 +46,13 @@ analyse_live()
     # into stale/changing pointers and such, and may fail as a result.
     cat <<EOF > "${K_TMP_DIR}/crash-simple.cmd"
 sym -l
-log -m
-runq
-foreach bt
-foreach files
-kmem -i
-kmem -s
 exit
 EOF
 
 
     # Check command output of this session.
     cat <<EOF >> "${K_TMP_DIR}/crash.cmd"
-files
-mod
-mod -S
-mod -s twofish
-runq
-alias
-foreach bt
-foreach bash task
-foreach files
-mount
-mount -f
-search -u deadbeef
-search -s _etext -m ffff0000 abcd
-search -p babe0000 -m ffff
-vm
-vm -p 1
-ascii
-fuser /
-net
-set
-set -p
-set -v
-bt
-bt -t
-bt -r
-bt -T
-bt -l 1
-bt -f 1
-bt -e
-bt -E
-bt 0
-gdb help
-p init_mm
-sig -l
-btop 512a000
-help help
-ps
-ps -k
-ps -u
-ps -s
-struct vm_area_struct
-whatis linux_binfmt
-dev
-dev -i
-pte d8e067
-swap
-dis sys_signal
-kmem -i
-sym -q pipe
-ptob 512a
-eval (1 << 32)
-ptov 56e000
-sys config
-sys -c
-sys -c select
-rd jiffies
-task
-extend
-mach
-mach -m
-timer
+pte e00000039f470105
 EOF
 
     # In order for the "irq -u" option to work, the architecture
@@ -134,25 +68,14 @@ EOF
 # RHEL5/6/7 takes different version of crash utility respectively.
 # So here adding cmds specific to each version.
 
-    if [[ $K_DIST_VER -eq 5 ]]; then
-        cat <<EOF >>"${K_TMP_DIR}/crash.cmd"
-mount -i
-dev -p
-list -s module.version -H modules
-exit
-EOF
-    fi
-
     if [[ $K_DIST_VER -eq 6 ]]; then
         cat <<EOF >>"${K_TMP_DIR}/crash.cmd"
-list -o task_struct.tasks -h init_task
 exit
 EOF
     fi
 
     if [[ $K_DIST_VER -eq 7 ]]; then
         cat <<EOF >>"${K_TMP_DIR}/crash.cmd"
-list -o task_struct.tasks -h init_task
 exit
 EOF
     fi
