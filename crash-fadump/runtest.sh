@@ -34,8 +34,18 @@ crash_fadump()
         grep -q 'fadump' <<< "${KERARGS}" || {
             KERARGS+=" fadump=on"
         }
+
+        log_info "- Print and report old initramfs img"
+        stat /boot/initramfs-$(uname -r).img
+        cp /boot/initramfs-$(uname -r).img /boot/initramfs-$(uname -r).old.img
+        report_file /boot/initramfs-$(uname -r).old.img
+
         kdump_prepare fadump
         report_system_info
+
+        log_info "- Print and report new initramfs img"
+        stat /boot/initramfs-$(uname -r).img
+        report_file /boot/initramfs-$(uname -r).img
 
         [ "$(cat /sys/kernel/fadump_enabled)" == "1" ] || log_error "- Fadump is not enabled!"
         [ "$(cat /sys/kernel/fadump_registered)" == "1" ] || log_error "- Fadump is not registered!"
